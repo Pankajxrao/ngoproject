@@ -1,71 +1,22 @@
- 
-import mongoose, { Schema, Document } from "mongoose";
+import z from "zod";
 
-export interface RestaurantModel extends Document {
-  userId: mongoose.Types.ObjectId;
-  restaurantName: string;
-  address: string;
+export const restaurantSchema = z.object({
+  restaurantName: z
+    .string()
+    .min(2, "Restaurant name must be at least 2 characters")
+    .max(100, "Restaurant name must be at most 100 characters"),
 
-  location: {
-    type: "Point";
-    coordinates: [number, number];
-  };
+  address: z
+    .string()
+    .min(5, "Address must be at least 5 characters"),
 
-  verified: boolean;
+  latitude: z
+    .number()
+    .min(-90)
+    .max(90),
 
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const restaurantSchema = new Schema<RestaurantModel>(
-  {
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      unique: true,
-    },
-
-    restaurantName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    address: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        required: true,
-        default: "Point",
-      },
-
-      coordinates: {
-        type: [Number],
-        required: true,
-      },
-    },
-
-    verified: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
-
-restaurantSchema.index({ location: "2dsphere" });
-
-const Restaurant =
-  mongoose.models.Restaurant ||
-  mongoose.model<RestaurantModel>("Restaurant", restaurantSchema);
-
-export default Restaurant;
+  longitude: z
+    .number()
+    .min(-180)
+    .max(180),
+});

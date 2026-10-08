@@ -1,134 +1,38 @@
-// models/Donation.ts
+import z from "zod";
 
-import mongoose, { Schema, Document } from "mongoose";
+export const donationSchema = z.object({
+  foodName: z
+    .string()
+    .min(2, "Food name must be at least 2 characters")
+    .max(100, "Food name must be at most 100 characters"),
 
-export interface DonationModel extends Document {
-  restaurantId: mongoose.Types.ObjectId;
-  ngoId?: mongoose.Types.ObjectId;
+  foodType: z.enum([
+    "cooked_food",
+    "packaged_food",
+    "bakery",
+    "fruits",
+    "vegetables",
+    "other",
+  ]),
 
-  foodName: string;
-  foodType:
-    | "cooked_food"
-    | "packaged_food"
-    | "bakery"
-    | "fruits"
-    | "vegetables"
-    | "other";
+  quantity: z
+    .number()
+    .positive("Quantity must be greater than 0"),
 
-  quantity: number;
-  unit: string;
+  unit: z
+    .string()
+    .min(1, "Unit is required"),
 
-  preparedAt?: Date;
-  expiryTime: Date;
-  pickupDeadline: Date;
+  preparedAt: z
+    .coerce
+    .date()
+    .optional(),
 
-  status:
-    | "available"
-    | "accepted"
-    | "picked_up"
-    | "completed"
-    | "expired"
-    | "cancelled";
+  expiryTime: z
+    .coerce
+    .date(),
 
-  pickupTime?: Date;
-  pickedUpAt?: Date;
-
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const DonationSchema = new Schema<DonationModel>(
-  {
-    restaurantId: {
-      type: Schema.Types.ObjectId,
-      ref: "Restaurant",
-      required: true,
-    },
-
-    ngoId: {
-      type: Schema.Types.ObjectId,
-      ref: "NGO",
-      default: null,
-    },
-
-    foodName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    foodType: {
-      type: String,
-      enum: [
-        "cooked_food",
-        "packaged_food",
-        "bakery",
-        "fruits",
-        "vegetables",
-        "other",
-      ],
-      required: true,
-    },
-
-    quantity: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-
-    unit: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    preparedAt: {
-      type: Date,
-    },
-
-    expiryTime: {
-      type: Date,
-      required: true,
-    },
-
-    pickupDeadline: {
-      type: Date,
-      required: true,
-    },
-
-    status: {
-      type: String,
-      enum: [
-        "available",
-        "accepted",
-        "picked_up",
-        "completed",
-        "expired",
-        "cancelled",
-      ],
-      default: "available",
-    },
-
-    pickupTime: {
-      type: Date,
-    },
-
-    pickedUpAt: {
-      type: Date,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
-
-DonationSchema.index({ restaurantId: 1 });
-DonationSchema.index({ ngoId: 1 });
-DonationSchema.index({ status: 1 });
-DonationSchema.index({ expiryTime: 1 });
-
-const Donation =
-  mongoose.models.Donation ||
-  mongoose.model<DonationModel>("Donation", DonationSchema);
-
-export default Donation;
+  pickupDeadline: z
+    .coerce
+    .date(),
+});

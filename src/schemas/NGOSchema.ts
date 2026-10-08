@@ -1,77 +1,27 @@
- 
-import mongoose, { Schema, Document } from "mongoose";
+import z from "zod";
 
-export interface NGOSchema extends Document {
-  userId: mongoose.Types.ObjectId;
-  ngoName: string;
-  address: string;
+export const ngoSchema = z.object({
+  ngoName: z
+    .string()
+    .min(2, "NGO name must be at least 2 characters")
+    .max(100, "NGO name must be at most 100 characters"),
 
-  location: {
-    type: "Point";
-    coordinates: [number, number];
-  };
+  address: z
+    .string()
+    .min(5, "Address must be at least 5 characters"),
 
-  verified: boolean;
-  capacity?: number;
+  latitude: z
+    .number()
+    .min(-90)
+    .max(90),
 
-  createdAt: Date;
-  updatedAt: Date;
-}
+  longitude: z
+    .number()
+    .min(-180)
+    .max(180),
 
-const ngoSchema = new Schema<NGOSchema>(
-  {
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      unique: true,
-    },
-
-    ngoName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    address: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        required: true,
-        default: "Point",
-      },
-
-      coordinates: {
-        type: [Number],
-        required: true,
-      },
-    },
-
-    verified: {
-      type: Boolean,
-      default: false,
-    },
-
-    capacity: {
-      type: Number,
-      min: 0,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
-
-ngoSchema.index({ location: "2dsphere" });
-
-const NGO =
-  mongoose.models.NGO ||
-  mongoose.model<NGOSchema>("NGO", ngoSchema);
-
-export default NGO;
+  capacity: z
+    .number()
+    .min(0, "Capacity cannot be negative")
+    .optional(),
+});
