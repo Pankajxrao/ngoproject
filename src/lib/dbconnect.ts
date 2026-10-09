@@ -1,35 +1,46 @@
+
+import dns from "node:dns";
 import mongoose from "mongoose";
 
-type ConnectionObject = {
-    isConnected?: number;
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+
+type MongooseCache = {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
 };
 
-const connection: ConnectionObject = {};
+const globalWithMongoose = globalThis as typeof globalThis & {
+  mongooseCache?: MongooseCache;
+};
 
-async function dbConnect(): Promise<void> {
-    if (connection.isConnected === 1) {
-        console.log("Already connected to database");
-        return;
-    }
+const cached =
+  globalWithMongoose.mongooseCache ??
+  (globalWithMongoose.mongooseCache = {
+    conn: null,
+    promise: null,
+  });
 
-    try {
-        const mongoUri = process.env.MONGODB_URI;
+export async function dbConnect() {
+  const uri = process.env.MONGODB_URI;
 
-        if (!mongoUri) {
-            throw new Error("MONGODB_URI is not defined in .env.local");
-        }
+  if (!uri) {
+    throw new Error("MONGODB_URI is missing from .env");
+  }
 
-        const db = await mongoose.connect(mongoUri);
+  if (cached.conn) {
+    return cached.conn;
+  }
 
-        connection.isConnected = db.connections[0].readyState;
-
-        console.log("DB connected successfully");
-    } catch (error) {
-        connection.isConnected = 0;
-        console.error("Database connection failed:", error);
-
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(uri, { serverSelectionTimeoutMS: 10000 })
+      .then(() => mongoose)
+      .catch((error: unknown) => {
+        cached.promise = null;
         throw error;
-    }
-}
+      });
+  }
 
-export default dbConnect;
+  cached.conn = await cached.promise;
+  return cached.conn;
+}

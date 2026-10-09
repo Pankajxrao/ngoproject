@@ -6,9 +6,11 @@ import bcrypt from "bcrypt";
 import { ApiResponse } from "@/utils/ApiResponse";
 import { generateToken } from "@/utils/jwt";
 import { cookies } from "next/headers";
+import { dbConnect } from "@/lib/dbconnect";
 
 export async function POST(req: NextRequest) {
   try {
+    await dbConnect()
     const body = await req.json();
 
     const result = loginSchema.safeParse(body);
@@ -59,7 +61,7 @@ export async function POST(req: NextRequest) {
     );
 
   } catch (error) {
-
+ console.error("LOGIN ERROR:", error);
     if (error instanceof ApiError) {
       return NextResponse.json(
         {
