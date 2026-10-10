@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
 import { dbConnect } from "@/lib/dbconnect";
@@ -9,7 +8,7 @@ import { ApiError } from "@/utils/ApiError";
 
 export async function POST(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     await dbConnect();
@@ -23,10 +22,7 @@ export async function POST(
 
     // 2. Only NGOs can accept donations
     if (user.role !== "ngo") {
-      throw new ApiError(
-        403,
-        "Only NGO accounts can accept donations"
-      );
+      throw new ApiError(403, "Only NGO accounts can accept donations");
     }
 
     // 3. Validate donation ID
@@ -48,7 +44,7 @@ export async function POST(
     if (!ngo.verified) {
       throw new ApiError(
         403,
-        "Your NGO must be verified before accepting donations"
+        "Your NGO must be verified before accepting donations",
       );
     }
 
@@ -62,12 +58,13 @@ export async function POST(
         $set: {
           status: "accepted",
           ngoId: ngo._id,
+          acceptedAt: new Date(),
         },
       },
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     if (!donation) {
@@ -77,10 +74,7 @@ export async function POST(
         throw new ApiError(404, "Donation not found");
       }
 
-      throw new ApiError(
-        409,
-        "This donation is no longer available"
-      );
+      throw new ApiError(409, "This donation is no longer available");
     }
 
     return NextResponse.json(
@@ -89,7 +83,7 @@ export async function POST(
         message: "Donation accepted successfully",
         donation,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Accept donation error:", error);
@@ -101,7 +95,7 @@ export async function POST(
           message: error.message,
           errors: error.errors,
         },
-        { status: error.statusCode }
+        { status: error.statusCode },
       );
     }
 
@@ -110,7 +104,7 @@ export async function POST(
         success: false,
         message: "Failed to accept donation",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
