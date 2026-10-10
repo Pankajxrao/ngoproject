@@ -1,4 +1,3 @@
- 
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface NGOSchema extends Document {
@@ -13,7 +12,7 @@ export interface NGOSchema extends Document {
 
   verified: boolean;
   capacity?: number;
-
+  acceptingDonations: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -52,7 +51,10 @@ const ngoSchema = new Schema<NGOSchema>(
         required: true,
       },
     },
-
+    acceptingDonations: {
+      type: Boolean,
+      default: false,
+    },
     verified: {
       type: Boolean,
       default: false,
@@ -65,13 +67,11 @@ const ngoSchema = new Schema<NGOSchema>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 ngoSchema.index({ location: "2dsphere" });
 
-const NGO =
-  mongoose.models.NGO ||
-  mongoose.model<NGOSchema>("NGO", ngoSchema);
+const NGO = mongoose.models.NGO || mongoose.model<NGOSchema>("NGO", ngoSchema);
 
 export default NGO;

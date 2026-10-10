@@ -1,4 +1,3 @@
- 
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface RestaurantModel extends Document {
@@ -12,7 +11,7 @@ export interface RestaurantModel extends Document {
   };
 
   verified: boolean;
-
+  donating: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -56,10 +55,14 @@ const restaurantSchema = new Schema<RestaurantModel>(
       type: Boolean,
       default: false,
     },
+    donating: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 restaurantSchema.index({ location: "2dsphere" });
