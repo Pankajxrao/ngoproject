@@ -1,161 +1,115 @@
-# Food Donation Platform — Backend API
+# 🍱 Food Donation Platform — Backend API
 
-A backend API for managing food donations between restaurants and NGOs. The platform allows restaurants to publish surplus food, verified NGOs to accept and collect donations, and administrators to manage verification and monitor donation activity.
+The project is built with **Next.js App Router, TypeScript, MongoDB, and Mongoose** to connect restaurants with NGOs and simplify surplus food donation.
 
-The backend is built with **Next.js App Router, TypeScript, MongoDB, and Mongoose**. It uses role-based authentication, location-based NGO discovery, and email notifications to support the donation lifecycle.
+Restaurants can publish surplus food, verified NGOs can discover and accept donations, and administrators can verify organizations and monitor donation activity. The platform supports role-based authentication, location-based NGO discovery, donation tracking, monthly statistics, and email notifications.
 
-## Table of Contents
+## 📌 Features
 
-1. [Features](#features)
-2. [Technology Stack](#technology-stack)
-3. [How the System Works](#how-the-system-works)
-4. [User Roles and Permissions](#user-roles-and-permissions)
-5. [Project Structure](#project-structure)
-6. [Getting Started](#getting-started)
-7. [Environment Variables](#environment-variables)
-8. [Authentication](#authentication)
-9. [API Reference](#api-reference)
-10. [Donation Lifecycle](#donation-lifecycle)
-11. [Email Notifications](#email-notifications)
-12. [Testing with Postman](#testing-with-postman)
-13. [Common Errors](#common-errors)
-14. [Security and Production Notes](#security-and-production-notes)
+-  JWT-based authentication using HTTP-only cookies
+-  Role-based authorization for Admin, Restaurant, and NGO
+-  Restaurant profile creation and management
+-  NGO profile creation and management
+-  Admin verification of restaurants and NGOs
+-  Food donation creation and management
+-  NGO donation acceptance and assignment
+-  Donation pickup and completion tracking
+-  Restaurant cancellation of available donations
+-  Nearby NGO discovery using MongoDB geospatial queries
+-  Monthly donation and acceptance statistics
+-  Email notifications when donations are picked up
+-  MongoDB database integration using Mongoose
 
----
-
-## Features
-
-- Restaurant and NGO profile management.
-- Role-based access for administrators, restaurants, and NGOs.
-- Restaurant and NGO verification by administrators.
-- Food donation creation and management.
-- NGO acceptance of available donations.
-- Donation pickup and completion tracking.
-- Location-based discovery of nearby eligible NGOs.
-- Monthly donation statistics for restaurants and NGOs.
-- Email notifications to restaurants when their donations are picked up.
-- MongoDB geospatial queries for nearby NGO discovery.
-
-## Technology Stack
+## 🛠️ Technology Stack
 
 | Technology | Purpose |
 |---|---|
-| Next.js App Router | API routes and backend application |
-| TypeScript | Type-safe development |
-| MongoDB | Persistent data storage |
-| Mongoose | MongoDB models, queries, and validation |
-| JWT-based authentication | Authenticated user identity |
-| HTTP-only cookies | Session token transport |
-| Zod, where used | Request data validation |
-| Nodemailer | Sending email notifications |
+| Next.js App Router | API routes |
+| TypeScript | Type safety |
+| MongoDB | Database |
+| Mongoose | Database modeling |
+| JWT | Authentication |
+| HTTP-only Cookies | Session management |
+| Zod | Request validation, where implemented |
+| Nodemailer | Email notifications |
 | Gmail SMTP | Email delivery |
 | Postman | API testing |
 
-## How the System Works
+## 🔄 How It Works
 
-The platform has three types of users.
-
-- **Restaurant:** Creates food donations and manages its restaurant profile.
-- **NGO:** Maintains its NGO profile, discovers eligible donations, accepts them, and records pickup and completion.
-- **Admin:** Verifies restaurants and NGOs and monitors donation activity.
-
-The typical workflow is:
-
-1. A user registers and logs in.
-2. A restaurant or NGO creates its profile.
-3. An administrator verifies the profile.
+1. Users register and log in.
+2. Restaurants and NGOs create their profiles.
+3. Admin verifies both organizations.
 4. A verified restaurant creates a food donation.
-5. An eligible NGO discovers the donation and accepts it.
-6. The NGO collects the food and changes the donation status to `picked_up`.
-7. The backend sends an email to the restaurant's registered email address, including the NGO name.
-8. The NGO marks the donation as `completed` after the handover process is finished.
-9. Administrators can review monthly donation and acceptance statistics.
+5. An eligible NGO discovers and accepts the donation.
+6. The NGO collects the food and updates the status to `picked_up`.
+7. The backend sends an email notification to the restaurant.
+8. The NGO updates the donation status to `completed`.
+9. Admin monitors donation activity and monthly statistics.
 
-### Workflow overview
+### Donation Workflow
 
 ```text
-User Registration / Login
-          |
-          v
-  Role-based Access
-          |
-    +-----+------+
-    |            |
-    v            v
- Restaurant     NGO
- Profile        Profile
-    |            |
-    +-----+------+
-          |
-          v
- Admin Verification
-          |
-          v
- Restaurant Creates Donation
-          |
-          v
- Donation: available
-          |
-          v
- NGO Accepts Donation
-          |
-          v
- Donation: accepted
-          |
-          v
- NGO Picks Up Food
-          |
-          v
- Donation: picked_up
-          |
-          +----> Email Sent to Restaurant
-          |
-          v
- Donation: completed
+Registration / Login
+        |
+        v
+Role-Based Authentication
+        |
+        v
+Create Restaurant / NGO Profiles
+        |
+        v
+Admin Verification
+        |
+        v
+Restaurant Creates Donation
+        |
+        v
+     available
+        |
+        v
+NGO Accepts Donation
+        |
+        v
+      accepted
+        |
+        v
+NGO Picks Up Food
+        |
+        v
+     picked_up
+        |
+        +----> Email Notification
+        |
+        v
+     completed
 ```
 
-The API also supports restaurant cancellation of a donation while it is still available.
+A restaurant can cancel a donation while its status is `available`, subject to the implemented authorization rules.
 
----
+## 👥 User Roles
 
-## User Roles and Permissions
-
-| Action | Admin | Restaurant | NGO |
+| Feature | Admin | Restaurant | NGO |
 |---|---|---|---|
-| Manage own profile | Depends on implemented routes | Yes | Yes |
-| Create a food donation | No, unless separately implemented | Yes | No |
-| View donations | All donations, where supported | Own donations | Available and assigned donations |
-| Accept a donation | No | No | Yes |
-| Mark a donation as picked up | No | No | Assigned NGO only |
-| Complete a donation | No | No | Assigned NGO only |
-| Cancel an available donation | No | Owner only | No |
+| Manage own profile | Route-dependent | Yes | Yes |
+| Create donation | No by default | Yes | No |
+| View donations | All, where supported | Own donations | Available and assigned |
+| Accept donation | No | No | Yes |
+| Mark as picked up | No | No | Assigned NGO |
+| Complete donation | No | No | Assigned NGO |
+| Cancel available donation | No | Owner only | No |
 | Verify restaurants | Yes | No | No |
 | Verify NGOs | Yes | No | No |
-| View administrative statistics | Yes | No | No |
+| View admin statistics | Yes | No | No |
 
-Authorization is based on the authenticated user's role and ownership of the relevant resource. An authenticated user should not be able to modify another user's profile or donation simply by changing an ID in the URL.
+Authorization should check the authenticated user's role, ownership, organization verification, and donation assignment as appropriate.
 
-> **Important:** A valid login does not automatically make a restaurant or NGO eligible for every operation. Verification and donation assignment are additional business rules.
-
----
-
-## Project Structure
-
-The following is the conceptual structure of the API routes discussed in this project. Adjust it to match the actual files in your repository.
+## 📁 Project Structure
 
 ```text
 src/
 ├── app/
 │   └── api/
-│       ├── donations/
-│       │   ├── route.ts
-│       │   └── [id]/
-│       │       ├── accept/
-│       │       │   └── route.ts
-│       │       ├── status/
-│       │       │   └── route.ts
-│       │       └── nearby-NGO/
-│       │           └── route.ts
 │       ├── restaurants/
 │       │   ├── route.ts
 │       │   └── [id]/
@@ -168,13 +122,22 @@ src/
 │       │       ├── route.ts
 │       │       └── verify/
 │       │           └── route.ts
+│       ├── donations/
+│       │   ├── route.ts
+│       │   └── [id]/
+│       │       ├── accept/
+│       │       │   └── route.ts
+│       │       ├── status/
+│       │       │   └── route.ts
+│       │       └── nearby-NGO/
+│       │           └── route.ts
 │       └── admin/
-│           ├── restaurants/
+│           ├── ngo/
 │           │   ├── route.ts
 │           │   └── [id]/
 │           │       └── donations/
 │           │           └── route.ts
-│           └── ngo/
+│           └── restaurants/
 │               ├── route.ts
 │               └── [id]/
 │                   └── donations/
@@ -189,39 +152,36 @@ src/
     └── Donation.ts
 ```
 
-Authentication helpers, error utilities, schemas, and registration/login routes may be located elsewhere in the project.
+*Note: This is the documented route structure. Authentication, registration, and other utility files may be located elsewhere in your repository.*
 
----
+##  Getting Started
 
-## Getting Started
+### Prerequisites
 
-### 1. Prerequisites
+- Node.js compatible with your Next.js version
+- npm, pnpm, or yarn
+- MongoDB local instance or MongoDB Atlas
+- Postman for API testing
+- Gmail account with an app password, if email notifications are enabled
 
-Install the following before running the project:
-
-- Node.js compatible with your installed Next.js version.
-- npm, pnpm, yarn, or the package manager used by the repository.
-- A MongoDB database, either local or hosted.
-- A Gmail account with an app password if email notifications are enabled.
-- Postman or another API client.
-
-### 2. Install dependencies
-
-Clone the repository and enter the project directory:
+### 1. Clone the repository
 
 ```bash
 git clone <YOUR_REPOSITORY_URL>
 cd <YOUR_PROJECT_DIRECTORY>
+```
+
+Replace the placeholders with your repository URL and project directory.
+
+### 2. Install dependencies
+
+```bash
 npm install
 ```
 
-Use the appropriate package manager if the project uses something other than npm.
-
 ### 3. Configure environment variables
 
-Create a `.env.local` file in the project root. Use the variable names expected by your existing database and authentication code.
-
-Example:
+Create a `.env.local` file in the project root.
 
 ```dotenv
 MONGODB_URI=your_mongodb_connection_string
@@ -231,9 +191,9 @@ EMAIL_USER=yourprojectemail@gmail.com
 EMAIL_APP_PASSWORD=your_gmail_app_password
 ```
 
-These are illustrative names for MongoDB and JWT configuration. If your project uses different names, retain those names in the actual environment file.
+Use the exact variable names expected by your existing code.
 
-**Never commit real database credentials, JWT secrets, or email app passwords to Git.**
+**Important:** Never commit real credentials, database connection strings, JWT secrets, or email passwords to Git.
 
 ### 4. Start the development server
 
@@ -241,113 +201,70 @@ These are illustrative names for MongoDB and JWT configuration. If your project 
 npm run dev
 ```
 
-The API will generally be available at:
+The API should be available at:
 
-```text
-http://localhost:3000
-```
+- Application: `http://localhost:3000`
+- API base URL: `http://localhost:3000/api`
 
-Use this as the Postman base URL unless you configured another port.
+##  Authentication
 
----
+The API uses JWT-based authentication and HTTP-only cookies for authenticated requests.
 
-## Environment Variables
+Use the appropriate authenticated session for each role:
 
-| Variable | Purpose |
-|---|---|
-| `MONGODB_URI` | MongoDB connection string, if this is the variable used by the database helper |
-| `JWT_SECRET` | Secret used to sign or verify JWTs, if applicable to the implementation |
-| `EMAIL_USER` | Gmail account used to send notification emails |
-| `EMAIL_APP_PASSWORD` | Gmail app password used by Nodemailer |
+- **Admin:** Profile verification and administrative statistics.
+- **Restaurant:** Restaurant profile management and donation creation.
+- **NGO:** NGO profile management, donation acceptance, pickup, and completion.
 
-### Gmail configuration
+Login and registration endpoints are not listed here because their exact paths depend on your implementation.
 
-The email utility uses Nodemailer with Gmail SMTP.
+### Authorization Rules
 
-1. Enable two-step verification on the Google account.
-2. Create a Google app password if the account is eligible.
-3. Put the email address in `EMAIL_USER`.
-4. Put the generated app password in `EMAIL_APP_PASSWORD`.
-5. Restart the development server after changing environment variables.
+- Only authorized administrators should verify organizations.
+- Restaurants should manage only their own donations.
+- NGOs should update only donations assigned to them.
+- Only eligible NGOs should accept available donations.
+- Clients should not be allowed to choose arbitrary resource owners by submitting IDs.
 
-A regular Gmail login password should not be used in place of an app password.
-
----
-
-## Authentication
-
-Protected routes require a valid authenticated session.
-
-The current implementation uses a JWT-based user identity and cookies. In Postman, log in using the appropriate authentication route, then retain the authentication cookie returned by the server.
-
-For routes requiring a particular role, use the corresponding account:
-
-- Admin cookie for verification and administrative statistics.
-- Restaurant cookie for profile operations and donation creation.
-- NGO cookie for accepting donations and updating the status of assigned donations.
-
-The exact login and registration paths and request fields should be taken from the project's authentication route files; they are not assumed here.
-
-### Recommended testing practice
-
-Keep separate Postman sessions or cookie jars for the admin, restaurant, and NGO accounts. This makes role-specific testing easier and avoids accidentally using the wrong user's session.
-
----
-
-## API Reference
+## 📡 API Reference
 
 **Base URL:** `http://localhost:3000/api`
 
-All paths below are relative to the base URL. Protected routes require authentication, and role restrictions apply as described.
+All endpoints below are relative to this URL. Protected routes require authentication, and role restrictions apply.
 
-### 1. Restaurant profile routes
+### 1. Restaurant Routes
 
-#### `GET /restaurants`
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/restaurants` | Retrieve restaurant profiles |
+| POST | `/restaurants` | Create a restaurant profile |
+| GET | `/restaurants/:id` | Retrieve a restaurant by ID |
+| PATCH | `/restaurants/:id` | Update a restaurant profile |
+| PATCH | `/restaurants/:id/verify` | Verify or unverify a restaurant |
 
-Retrieves restaurant profile information according to the implemented handler and access rules.
+#### Create a restaurant
 
-#### `POST /restaurants`
+`POST /restaurants`
 
-Creates a restaurant profile associated with the authenticated restaurant user.
-
-The profile includes fields such as:
-
-- `restaurantName`
-- `address`
-- `location`
-- `donating`
-- `verified`
-
-The location uses GeoJSON Point coordinates in the order **longitude, latitude**:
+Example request body:
 
 ```json
 {
+  "restaurantName": "Green Garden Restaurant",
+  "address": "New Delhi, India",
   "location": {
     "type": "Point",
     "coordinates": [77.1025, 28.7041]
-  }
+  },
+  "donating": true
 }
 ```
 
-The coordinates above are an example only. Supply the actual restaurant coordinates.
+The coordinates are an example only. GeoJSON coordinates must be ordered as `[longitude, latitude]`.
 
-The server should associate the profile with the authenticated user rather than trusting a client-supplied owner ID.
+#### Verify a restaurant
 
-#### `GET /restaurants/[id]`
-
-Retrieves the restaurant profile identified by `id`, subject to the route's access rules.
-
-#### `PATCH /restaurants/[id]`
-
-Updates permitted fields of a restaurant profile. The profile owner may be able to change the `donating` flag, depending on the route's validation rules.
-
-#### `PATCH /restaurants/[id]/verify`
-
-**Role:** Admin
-
-Verifies or un-verifies a restaurant.
-
-Example request body:
+`PATCH /restaurants/:id/verify`
 
 ```json
 {
@@ -355,57 +272,42 @@ Example request body:
 }
 ```
 
-A verified restaurant can create donations if the donation creation route enforces verification as expected.
+**Access:** Admin.
 
----
+### 2. NGO Routes
 
-### 2. NGO profile routes
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/ngo` | Retrieve NGO profiles |
+| POST | `/ngo` | Create an NGO profile |
+| GET | `/ngo/:id` | Retrieve an NGO by ID |
+| PATCH | `/ngo/:id` | Update an NGO profile |
+| PATCH | `/ngo/:id/verify` | Verify or unverify an NGO |
 
-#### `GET /ngo`
+#### Create an NGO
 
-Retrieves NGO profile information according to the implemented handler and access rules.
+`POST /ngo`
 
-#### `POST /ngo`
-
-Creates an NGO profile associated with the authenticated NGO user.
-
-Profile fields include:
-
-- `ngoName`
-- `address`
-- `location`
-- `verified`
-- `acceptingDonations`
-- `capacity`, if used by the current model
-
-The location uses GeoJSON Point coordinates:
+Example request body:
 
 ```json
 {
+  "ngoName": "Helping Hands Foundation",
+  "address": "New Delhi, India",
   "location": {
     "type": "Point",
     "coordinates": [77.1025, 28.7041]
-  }
+  },
+  "acceptingDonations": true,
+  "capacity": 100
 }
 ```
 
-Coordinates must be supplied in longitude, latitude order.
+Use the fields supported by your actual NGO schema. The `capacity` field is optional if implemented.
 
-#### `GET /ngo/[id]`
+#### Verify an NGO
 
-Retrieves an NGO profile by ID, subject to authorization rules.
-
-#### `PATCH /ngo/[id]`
-
-Updates permitted NGO profile fields. This may include the `acceptingDonations` flag.
-
-#### `PATCH /ngo/[id]/verify`
-
-**Role:** Admin
-
-Verifies or un-verifies an NGO.
-
-Example request body:
+`PATCH /ngo/:id/verify`
 
 ```json
 {
@@ -413,50 +315,21 @@ Example request body:
 }
 ```
 
-An NGO must satisfy the verification and availability rules implemented by the donation acceptance and nearby NGO routes.
+**Access:** Admin.
 
----
+### 3. Donation Routes
 
-### 3. Donation routes
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/donations` | Retrieve donations according to access rules |
+| POST | `/donations` | Create a food donation |
+| POST | `/donations/:id/accept` | Accept an available donation |
+| PATCH | `/donations/:id/status` | Update donation status |
+| GET | `/donations/:id/nearby-NGO` | Discover nearby eligible NGOs |
 
-#### `GET /donations`
+#### Create a donation
 
-Retrieves donations according to the authenticated user's role.
-
-The intended visibility rules are:
-
-- **Restaurant:** Its own donations.
-- **NGO:** Available donations and donations assigned to that NGO.
-- **Admin:** All donations, where supported by the handler.
-
-The exact filtering, pagination, and response format depend on the current route implementation.
-
-#### `POST /donations`
-
-**Role:** Restaurant
-
-Creates a food donation.
-
-A donation may include the following fields:
-
-| Field | Description |
-|---|---|
-| `foodName` | Name of the donated food |
-| `foodType` | Category of food |
-| `quantity` | Amount of food |
-| `unit` | Unit used for the quantity |
-| `preparedAt` | Preparation date/time, if applicable |
-| `expiryTime` | Food expiry date/time |
-| `pickupDeadline` | Deadline for collection |
-
-Supported food categories in the current model are:
-
-- `cooked_food`
-- `packaged_food`
-- `bakery`
-- `fruits`
-- `vegetables`
-- `other`
+`POST /donations`
 
 Example request body:
 
@@ -466,42 +339,44 @@ Example request body:
   "foodType": "cooked_food",
   "quantity": 10,
   "unit": "kg",
-  "preparedAt": "2026-10-10T10:00:00.000Z",
-  "expiryTime": "2026-10-10T18:00:00.000Z",
-  "pickupDeadline": "2026-10-10T16:00:00.000Z"
+  "preparedAt": "2026-10-20T10:00:00.000Z",
+  "expiryTime": "2026-10-20T18:00:00.000Z",
+  "pickupDeadline": "2026-10-20T16:00:00.000Z"
 }
 ```
 
-Replace the example dates with valid future or relevant dates for your test. Use the exact field names and accepted values defined in the current schema.
+Supported food categories, as described for the project:
 
-The server associates the donation with the authenticated restaurant, rather than allowing a client to create a donation for an arbitrary restaurant ID.
+- `cooked_food`
+- `packaged_food`
+- `bakery`
+- `fruits`
+- `vegetables`
+- `other`
 
-New donations are created with status `available`.
+The exact required fields and accepted values depend on your Mongoose schema.
 
-#### `POST /donations/[id]/accept`
+**Expected behavior:**
 
-**Role:** NGO
+- Only authorized restaurants can create donations.
+- The donation is associated with the authenticated restaurant.
+- The initial status is `available`.
 
-Accepts an available donation.
+#### Accept a donation
 
-Expected business rules:
+`POST /donations/:id/accept`
 
-1. The NGO must be authenticated.
-2. The NGO profile must exist and be verified.
-3. The donation must exist and have status `available`.
-4. The donation is assigned to the accepting NGO.
-5. Its status changes to `accepted`.
-6. The acceptance timestamp is recorded if `acceptedAt` is implemented in the Donation model.
+**Access:** Eligible NGO.
 
-The operation should only accept a donation that is still available. This prevents multiple NGOs from successfully claiming the same donation when the update is performed atomically.
+The endpoint should verify that the donation exists, is available, and can be accepted by the authenticated NGO. On success, the donation is assigned to that NGO and changes to `accepted`.
 
-No request body is required if the route reads the donation ID from the URL and does not define additional body fields.
+No request body is required if the route uses only the donation ID.
 
-#### `PATCH /donations/[id]/status`
+#### Update donation status
 
-Updates the status of an existing donation according to role and ownership rules.
+`PATCH /donations/:id/status`
 
-Example request body for pickup:
+**Record pickup:**
 
 ```json
 {
@@ -509,7 +384,7 @@ Example request body for pickup:
 }
 ```
 
-Example request body for completion:
+**Complete the donation:**
 
 ```json
 {
@@ -517,7 +392,7 @@ Example request body for completion:
 }
 ```
 
-Example request body for cancellation:
+**Cancel an available donation:**
 
 ```json
 {
@@ -525,368 +400,202 @@ Example request body for cancellation:
 }
 ```
 
-The route's intended transition rules are:
+Allowed transitions:
 
-| Current status | Requested status | Authorized actor |
+| Current Status | New Status | Authorized Actor |
 |---|---|---|
 | `available` | `cancelled` | Owning restaurant |
-| `accepted` | `picked_up` | NGO assigned to the donation |
-| `picked_up` | `completed` | NGO assigned to the donation |
+| `accepted` | `picked_up` | Assigned NGO |
+| `picked_up` | `completed` | Assigned NGO |
 
 Unsupported transitions should be rejected.
 
-When an assigned NGO changes the status to `picked_up`, the backend attempts to email the restaurant's registered email address. The message includes the food donation name and assigned NGO name.
+#### Find nearby NGOs
 
-A failed email notification should not undo a status change that has already been saved. The response may include a `notificationSent` field to indicate whether the notification succeeded.
+`GET /donations/:id/nearby-NGO`
 
-#### `GET /donations/[id]/nearby-NGO`
+**Access:** Restaurant.
 
-**Role:** Restaurant
+The endpoint discovers eligible NGOs within the documented 5 km radius, using geospatial coordinates and the applicable verification and donation-acceptance filters.
 
-Finds nearby NGOs eligible to receive a donation, using the donation's location and a geospatial query.
+A MongoDB `2dsphere` index is required for the relevant GeoJSON location field.
 
-The implemented search uses a 5-kilometre radius and filters for verified NGOs that are accepting donations.
+This route discovers potential recipients; it does not accept or assign the donation.
 
-The route depends on valid GeoJSON location data and the appropriate MongoDB `2dsphere` index.
+### 4. Admin Routes
 
-This route discovers potential recipients. It does not itself accept the donation or assign it to an NGO.
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/admin/ngo` | List NGOs and monthly acceptance statistics |
+| GET | `/admin/ngo/:id/donations` | Retrieve donations associated with an NGO |
+| GET | `/admin/restaurants` | List restaurants and monthly donation statistics |
+| GET | `/admin/restaurants/:id/donations` | Retrieve donations associated with a restaurant |
 
----
+All routes require an admin session.
 
-### 4. Admin dashboard routes
+#### NGO statistics
 
-These routes are intended for administrative monitoring and require an admin session.
-
-#### `GET /admin/ngo`
-
-Returns NGO records and monthly donation acceptance statistics, including an `acceptedThisMonth` count where implemented.
-
-Optional query parameter:
-
-```text
-?month=YYYY-MM
-```
-
-Example:
-
-```text
+```http
 GET /api/admin/ngo?month=2026-10
 ```
 
-The month parameter selects the reporting month. When omitted, the endpoint is intended to use the current month.
+Returns NGO records and monthly acceptance counts, such as `acceptedThisMonth`, where implemented.
 
-The acceptance count depends on the recorded acceptance timestamp (`acceptedAt`) and the NGO assignment. Older donations without this timestamp may not appear in the historical count.
+#### NGO donation history
 
-#### `GET /admin/ngo/[id]/donations`
-
-Returns donation records associated with a specified NGO for the selected reporting month, with restaurant information where included by the handler.
-
-Optional query parameter:
-
-```text
-?month=2026-10
-```
-
-Example:
-
-```text
+```http
 GET /api/admin/ngo/NGO_ID_HERE/donations?month=2026-10
 ```
 
-Use the actual MongoDB `_id` of the NGO profile.
+#### Restaurant statistics
 
-#### `GET /admin/restaurants`
-
-Returns restaurant records and monthly donation creation statistics, including a `donationsThisMonth` count where implemented.
-
-Optional query parameter:
-
-```text
-?month=2026-10
-```
-
-Example:
-
-```text
+```http
 GET /api/admin/restaurants?month=2026-10
 ```
 
-The count is based on donations created during the selected month, using the donation creation timestamp (`createdAt`).
+Returns restaurant records and monthly donation creation counts, such as `donationsThisMonth`, where implemented.
 
-#### `GET /admin/restaurants/[id]/donations`
+#### Restaurant donation history
 
-Returns donation records associated with a specified restaurant for the selected reporting month, with assigned NGO details where included by the handler.
-
-Optional query parameter:
-
-```text
-?month=2026-10
-```
-
-Example:
-
-```text
+```http
 GET /api/admin/restaurants/RESTAURANT_ID_HERE/donations?month=2026-10
 ```
 
-Use the actual MongoDB `_id` of the restaurant profile.
+Replace the ID placeholders with actual MongoDB document IDs.
 
-**Monthly reporting note:** The reporting month should be supplied in `YYYY-MM` format. Confirm the date range and timezone used by the current aggregation pipelines when comparing results across months.
+The optional `month` query parameter uses `YYYY-MM` format. Confirm the actual timezone and date boundaries used by your aggregation pipelines.
 
----
-
-## Donation Lifecycle
-
-The Donation model supports the following statuses:
+## 🔁 Donation Statuses
 
 | Status | Meaning |
 |---|---|
-| `available` | The donation is available for an NGO to accept |
-| `accepted` | An NGO has accepted and been assigned the donation |
-| `picked_up` | The NGO has recorded collection of the food |
-| `completed` | The donation workflow has been completed |
-| `expired` | The donation has expired |
-| `cancelled` | The donation has been cancelled |
+| `available` | Available for an NGO to accept |
+| `accepted` | Accepted and assigned to an NGO |
+| `picked_up` | Pickup has been recorded |
+| `completed` | Donation workflow is complete |
+| `expired` | Donation has expired |
+| `cancelled` | Donation has been cancelled |
 
-The API's permitted status transitions are more restrictive than the list of possible statuses. In particular, the routes described here allow the restaurant to cancel a donation only while it is `available`, and the assigned NGO to move it through `accepted` → `picked_up` → `completed`.
+The presence of `expired` in the model does not necessarily mean automatic expiry scheduling is implemented.
 
-The existence of `expired` in the schema does not by itself confirm that an automatic expiry scheduler or dedicated expiry route is implemented.
+### Important timestamps
 
-### Why acceptance and creation timestamps matter
+- `createdAt`: When the donation was created.
+- `acceptedAt`: When the donation was accepted, if implemented.
+- `pickedUpAt`: When pickup was recorded, if implemented.
 
-- `createdAt` records when the donation was created. It supports restaurant monthly donation statistics.
-- `acceptedAt` records when the donation was accepted. It supports NGO monthly acceptance statistics.
-- `pickedUpAt` records when pickup was recorded, where implemented.
+These timestamps represent different events and should not be used interchangeably in reports.
 
-These timestamps represent different events and should not be treated as interchangeable.
+## 📍 Location-Based NGO Discovery
 
----
+The nearby NGO endpoint uses MongoDB geospatial queries to find organizations near a donation's restaurant location.
 
-## Email Notifications
+The documented discovery criteria include:
 
-The backend sends a pickup notification to the restaurant when the assigned NGO updates a donation to `picked_up`.
+- A search radius of 5 km.
+- Verified NGO profiles.
+- NGOs currently accepting donations.
+- Valid GeoJSON location data.
+
+Example GeoJSON location:
+
+```json
+{
+  "type": "Point",
+  "coordinates": [77.1025, 28.7041]
+}
+```
+
+Remember that GeoJSON coordinates use longitude first and latitude second.
+
+Ensure the appropriate `2dsphere` index exists on the location field used by your query.
+
+## 📧 Email Notifications
+
+The backend attempts to notify a restaurant when its donation status changes to `picked_up`.
 
 ### Notification workflow
 
-1. The assigned NGO sends a status update.
-2. The backend validates the role, assignment, and allowed status transition.
-3. The updated donation is saved.
-4. The backend finds the restaurant associated with the donation.
-5. It retrieves the restaurant user's registered email address.
-6. It retrieves the assigned NGO's name.
-7. Nodemailer sends the email through Gmail SMTP.
-8. The API response reports whether the email notification was sent successfully, if `notificationSent` is included by the handler.
+1. The assigned NGO requests a pickup status update.
+2. The API validates authorization and the status transition.
+3. The donation update is saved.
+4. The backend retrieves the restaurant's registered email address and assigned NGO name.
+5. Nodemailer sends the notification through Gmail SMTP.
 
-The email includes the food donation name, NGO name, and pickup status.
+The email is intended to include the food donation name, NGO name, and pickup status.
 
-### Important behavior
+**Important:** Database updates and email delivery are separate operations. If email delivery fails after the database update succeeds, the donation may still be marked as `picked_up`.
 
-Email delivery and database updates are separate operations. If SMTP delivery fails after the database update, the donation may still be `picked_up`. The caller should inspect the response and server logs instead of assuming the entire operation failed.
+Check the API response and server logs for notification errors. For production, consider retry mechanisms or a background email queue.
 
-For production, consider a retry mechanism or notification queue if reliable delivery is essential.
+## 🧪 Testing with Postman
 
----
-
-## Testing with Postman
-
-Set the Postman base URL to:
+Set the base URL to:
 
 ```text
 http://localhost:3000/api
 ```
 
-Use a separate authenticated session for each role.
+Use separate cookie jars or sessions for Admin, Restaurant, and NGO accounts.
 
-### Recommended end-to-end test sequence
+### Recommended end-to-end testing sequence
 
-#### Step 1: Create test accounts
+1. **Register and log in:** Create test accounts using your implemented authentication routes.
+2. **Create profiles:** Create a restaurant profile and an NGO profile.
+3. **Verify organizations:** Log in as Admin and verify both profiles.
+4. **Create a donation:** Log in as the Restaurant and send `POST /donations`.
+5. **Find nearby NGOs:** Call `GET /donations/:id/nearby-NGO`.
+6. **Accept the donation:** Log in as an eligible NGO and call `POST /donations/:id/accept`.
+7. **Record pickup:** Call `PATCH /donations/:id/status` with `{"status":"picked_up"}`.
+8. **Check email:** Confirm the restaurant receives the pickup notification, if SMTP is configured.
+9. **Complete the donation:** Submit `{"status":"completed"}` to the status endpoint.
+10. **Check statistics:** Use the admin routes to inspect monthly counts and donation records.
 
-Register an admin, a restaurant user, and an NGO user using your existing authentication routes.
+Also test invalid status transitions, duplicate acceptance attempts, missing IDs, unauthorized roles, and unverified profiles.
 
-Log in as each user and retain their session cookies.
+## ⚠️ Common Errors
 
-#### Step 2: Create restaurant and NGO profiles
-
-Using the corresponding sessions:
-
-- Create the restaurant profile.
-- Create the NGO profile.
-- Ensure both profiles have valid location data if testing nearby NGO discovery.
-
-Record their profile IDs for later requests.
-
-#### Step 3: Verify both profiles
-
-Log in as admin.
-
-Send:
-
-```text
-PATCH /restaurants/RESTAURANT_ID_HERE/verify
-```
-
-Body:
-
-```json
-{
-  "verified": true
-}
-```
-
-Then send:
-
-```text
-PATCH /ngo/NGO_ID_HERE/verify
-```
-
-Body:
-
-```json
-{
-  "verified": true
-}
-```
-
-If the NGO must be actively accepting donations for nearby discovery, update that setting using the NGO profile route and the field names accepted by your implementation.
-
-#### Step 4: Create a donation
-
-Log in as the verified restaurant and send:
-
-```text
-POST /donations
-```
-
-Provide a valid donation request body using the fields described in the API reference.
-
-Save the returned donation ID.
-
-#### Step 5: Discover nearby NGOs
-
-As the restaurant, request:
-
-```text
-GET /donations/DONATION_ID_HERE/nearby-NGO
-```
-
-Check that the response includes eligible NGOs within the configured radius.
-
-#### Step 6: Accept the donation
-
-Log in as the verified NGO and send:
-
-```text
-POST /donations/DONATION_ID_HERE/accept
-```
-
-Confirm that the donation becomes `accepted` and is assigned to the NGO profile.
-
-#### Step 7: Record pickup
-
-Still using the assigned NGO's session, send:
-
-```text
-PATCH /donations/DONATION_ID_HERE/status
-```
-
-Body:
-
-```json
-{
-  "status": "picked_up"
-}
-```
-
-Verify that the status is updated and the API reports the notification result if available.
-
-Check the restaurant user's registered email inbox for the pickup notification.
-
-#### Step 8: Complete the donation
-
-As the assigned NGO, send:
-
-```text
-PATCH /donations/DONATION_ID_HERE/status
-```
-
-Body:
-
-```json
-{
-  "status": "completed"
-}
-```
-
-Confirm that the donation status is now `completed`.
-
-#### Step 9: Test monthly statistics
-
-Log in as admin and call:
-
-```text
-GET /admin/ngo?month=2026-10
-GET /admin/restaurants?month=2026-10
-GET /admin/ngo/NGO_ID_HERE/donations?month=2026-10
-GET /admin/restaurants/RESTAURANT_ID_HERE/donations?month=2026-10
-```
-
-Replace `2026-10` with the month you want to inspect. The example is a reporting month, not a guarantee that test records exist in that month.
-
----
-
-## Common Errors
-
-The exact response format depends on the error handler used by each route.
-
-| Problem | Likely reason | What to check |
+| Error | Possible Cause | Suggested Check |
 |---|---|---|
-| `401 Unauthorized` | Missing, invalid, or expired session | Log in again and confirm Postman sends the cookie |
-| `403 Forbidden` | The authenticated role cannot perform the operation | Check which account is logged in |
-| `404 Not Found` | The requested profile or donation does not exist | Verify the MongoDB document ID |
-| Validation error | Missing or invalid request fields | Check enum values, required fields, and data types |
-| Donation cannot be accepted | Donation is no longer `available`, or NGO is not eligible | Check status, NGO verification, and assignment |
-| Status update rejected | Requested transition is not allowed | Follow the donation lifecycle |
-| Email notification failed | Missing SMTP configuration or email delivery error | Check `.env.local`, app password, server logs, and recipient email |
-| Nearby NGO results are empty | No eligible NGOs are within the radius | Check coordinates, verification, acceptance setting, and the geospatial index |
-| Monthly count is zero | No qualifying records fall in the selected month | Check timestamps, reporting month, and stored acceptance data |
+| `401 Unauthorized` | Missing or invalid session | Log in again and check cookies |
+| `403 Forbidden` | Insufficient permissions | Confirm the user's role |
+| `404 Not Found` | Invalid resource ID | Check the MongoDB document ID |
+| Validation error | Invalid or missing request fields | Check schema requirements |
+| Donation acceptance rejected | Donation unavailable or NGO ineligible | Check status and verification |
+| Status update rejected | Invalid transition or assignment | Follow the lifecycle rules |
+| Email notification failure | SMTP configuration or delivery issue | Check environment variables and server logs |
+| Nearby NGO results empty | No eligible NGOs found | Check coordinates, filters, and index |
+| Monthly count is zero | No qualifying records in the selected period | Check timestamps and month boundaries |
 
-For local debugging, inspect the server logs for database, validation, and email errors. Do not return secrets or sensitive SMTP details in API responses.
+The precise HTTP status codes and response bodies depend on the implemented route handlers.
 
----
+## 🔒 Security and Best Practices
 
-## Security and Production Notes
+- Keep JWT secrets and database credentials in environment variables.
+- Use HTTP-only cookies and secure cookie settings in production.
+- Validate request bodies, query parameters, and MongoDB IDs.
+- Enforce role checks and resource ownership on every protected route.
+- Prevent clients from assigning arbitrary restaurant or NGO IDs.
+- Make donation acceptance atomic to prevent duplicate claims.
+- Restrict verification endpoints to administrators.
+- Configure a MongoDB `2dsphere` index for geospatial searches.
+- Avoid logging passwords, JWTs, and SMTP credentials.
+- Add rate limiting and appropriate error handling.
+- Use consistent timezone rules for monthly reports.
+- Consider retryable email delivery for production deployments.
+- Test authorization failures as well as successful requests.
 
-Before deploying the API publicly, review the following:
+## 🤝 Contributing
 
-- Keep authentication cookies HTTP-only and configure secure cookie options for production.
-- Validate request bodies and URL IDs before performing database operations.
-- Enforce ownership and role checks on every protected route.
-- Do not allow clients to assign arbitrary `restaurantId`, `ngoId`, or ownership fields.
-- Ensure donation acceptance is atomic so two NGOs cannot claim the same available donation.
-- Confirm that profile verification routes are accessible only to admins.
-- Keep secrets in environment variables and out of version control.
-- Remove temporary email-testing endpoints before deployment.
-- Consider rate limiting and request logging for public endpoints.
-- Avoid logging passwords, JWTs, app passwords, or other sensitive values.
-- Use database indexes for frequently queried fields and the geospatial location fields.
-- Consider retryable email delivery or a background queue for notifications.
-- Ensure monthly statistics use consistent timezone and date-boundary rules.
-- Test invalid status transitions, unauthorized access, duplicate acceptance attempts, and missing profile data.
+Contributions and improvements are welcome.
 
----
+1. Fork the repository.
+2. Create a feature branch.
+3. Implement your changes.
+4. Test the relevant API endpoints.
+5. Submit a pull request with a clear description.
 
-## Contributing
+When adding or changing a route, update this README to reflect the actual endpoint, permissions, request fields, and behavior.
 
-When adding or modifying a route:
 
-1. Confirm the allowed roles and resource ownership rules.
-2. Validate request data.
-3. Use the shared database connection helper.
-4. Apply the relevant Mongoose model constraints.
-5. Return a consistent success or error response.
-6. Add Postman tests for both authorized and unauthorized scenarios.
-7. Update this README if the route, status workflow, request body, or environment configuration changes.
-
-## License
-
-Add the project's license here if it is intended for public distribution.
+**Built to reduce food waste and help surplus food reach the people who need it.** 🍲
