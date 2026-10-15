@@ -1,7 +1,9 @@
+
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 
 export default function LogoutButton() {
   const router = useRouter();
@@ -27,7 +29,6 @@ export default function LogoutButton() {
         throw new Error(data.message || "Logout failed.");
       }
 
-      // Replace the current page and refresh server-rendered content.
       router.replace("/login");
       router.refresh();
     } catch (err) {
@@ -40,20 +41,22 @@ export default function LogoutButton() {
   }
 
   return (
-    <div className="fixed right-4 top-4 z-[1000]">
+    <div className="fixed left-3 top-3 z-[1000]">
       <button
         type="button"
         onClick={handleLogout}
         disabled={loading}
-        className="rounded-full border-2 border-[#a7d3b1] bg-white px-5 py-3 font-bold text-[#17492e] shadow-[0_4px_0_#246b45] transition hover:bg-[#eaf5ec] disabled:cursor-not-allowed disabled:opacity-60"
+        aria-label={loading ? "Logging out" : "Logout"}
+        title={loading ? "Logging out..." : "Logout"}
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-[#a7d3b1] bg-white text-[#17492e] shadow-sm transition hover:bg-[#eaf5ec] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? "Logging out..." : "Logout"}
+        <LogOut size={20} strokeWidth={2} />
       </button>
 
       {error && (
         <p
           role="alert"
-          className="mt-3 max-w-56 rounded-lg border border-red-200 bg-white p-3 text-sm text-red-600 shadow"
+          className="mt-2 max-w-56 rounded-lg border border-red-200 bg-white p-2 text-xs text-red-600 shadow"
         >
           {error}
         </p>
