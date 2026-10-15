@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -14,30 +13,24 @@ import {
 
 import type { Coordinates } from "@/components/LocationPicker";
 
-const GREEN = "#00845F";
-
-const LocationPicker = dynamic(
-  () => import("@/components/LocationPicker"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex h-64 items-center justify-center rounded-xl border border-[#DDE8DF] bg-[#F5F8F3] text-sm text-[#657568]">
-        Loading map...
-      </div>
-    ),
-  }
-);
+const LocationPicker = dynamic(() => import("@/components/LocationPicker"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-64 items-center justify-center rounded-xl border border-[#DDE8DF] bg-[#F5F8F3] text-sm text-[#657568]">
+      Loading map...
+    </div>
+  ),
+});
 
 type Restaurant = {
   _id: string;
   restaurantName: string;
   address: string;
-  location: {
-    coordinates: [number, number];
+  location?: {
+    coordinates?: [number, number];
   };
 };
 
-/* Uiverse-inspired pressed button, styled for ShareAPlate */
 function PlateButton({
   href,
   children,
@@ -92,6 +85,7 @@ function ProfileForm() {
   const [longitude, setLongitude] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [fetching, setFetching] = useState(Boolean(id));
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -127,10 +121,12 @@ function ProfileForm() {
         setLongitude(String(profile.location?.coordinates?.[0] ?? ""));
         setLatitude(String(profile.location?.coordinates?.[1] ?? ""));
       } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") return;
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
 
         setError(
-          err instanceof Error ? err.message : "Could not load profile."
+          err instanceof Error ? err.message : "Could not load profile.",
         );
       } finally {
         if (!controller.signal.aborted) {
@@ -146,13 +142,57 @@ function ProfileForm() {
 
   function handleLocationSelect(
     location: Coordinates,
-    selectedAddress?: string
+    selectedAddress?: string,
   ) {
     setLatitude(String(location.latitude));
     setLongitude(String(location.longitude));
 
     if (selectedAddress) {
       setAddress(selectedAddress);
+    }
+  }
+
+  async function handleDelete() {
+    if (!id || loading || deleting) return;
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this restaurant profile? This action cannot be undone.",
+    );
+
+    if (!confirmed) return;
+
+    setDeleting(true);
+    setError("");
+    setNotice("");
+
+    try {
+      const response = await fetch(`/api/restaurants/${id}`, {
+        method: "DELETE",
+        credentials: "same-origin",
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || "Could not delete restaurant profile.",
+        );
+      }
+
+      if (localStorage.getItem("shareaplateRestaurantId") === id) {
+        localStorage.removeItem("shareaplateRestaurantId");
+      }
+
+      router.replace("/restaurant");
+      router.refresh();
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong while deleting the profile.",
+      );
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -175,7 +215,7 @@ function ProfileForm() {
       lng > 180
     ) {
       setError(
-        "Please select a location on the map or enter valid latitude and longitude coordinates."
+        "Please select a location on the map or enter valid latitude and longitude coordinates.",
       );
       return;
     }
@@ -201,7 +241,7 @@ function ProfileForm() {
             latitude: lat,
             longitude: lng,
           }),
-        }
+        },
       );
 
       const result = await response.json();
@@ -210,13 +250,13 @@ function ProfileForm() {
         throw new Error(
           result.message ||
             result.errors?.formErrors?.[0] ||
-            "Could not save restaurant profile."
+            "Could not save restaurant profile.",
         );
       }
 
       const savedId = result.restaurant?._id ?? id;
 
-      if (savedId && typeof window !== "undefined") {
+      if (savedId) {
         localStorage.setItem("shareaplateRestaurantId", savedId);
       }
 
@@ -225,9 +265,7 @@ function ProfileForm() {
       router.push("/restaurant");
       router.refresh();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Something went wrong."
-      );
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -268,9 +306,11 @@ function ProfileForm() {
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#00845F]">
           Restaurant information
         </p>
+
         <h2 className="mt-2 text-xl font-extrabold text-[#193D2B] sm:text-2xl">
           {id ? "Update your restaurant" : "Tell us about your restaurant"}
         </h2>
+
         <p className="mt-2 text-sm leading-6 text-[#657568]">
           Enter your restaurant details and choose its location so local NGOs
           can find you.
@@ -284,6 +324,7 @@ function ProfileForm() {
         >
           Restaurant name
         </label>
+
         <input
           id="restaurantName"
           value={restaurantName}
@@ -302,6 +343,7 @@ function ProfileForm() {
         >
           Full address
         </label>
+
         <textarea
           id="address"
           value={address}
@@ -318,6 +360,7 @@ function ProfileForm() {
         <h3 className="font-extrabold text-[#193D2B]">
           Choose restaurant location
         </h3>
+
         <p className="mt-2 text-sm leading-6 text-[#657568]">
           Search for your restaurant, use your current location, or click the
           map to place a pin. The coordinates below will update automatically.
@@ -332,9 +375,8 @@ function ProfileForm() {
       </div>
 
       <div>
-        <h3 className="font-extrabold text-[#193D2B]">
-          Location coordinates
-        </h3>
+        <h3 className="font-extrabold text-[#193D2B]">Location coordinates</h3>
+
         <p className="mt-1 text-sm leading-6 text-[#657568]">
           You can also enter the coordinates manually.
         </p>
@@ -348,6 +390,7 @@ function ProfileForm() {
           >
             Latitude
           </label>
+
           <input
             id="latitude"
             type="number"
@@ -369,6 +412,7 @@ function ProfileForm() {
           >
             Longitude
           </label>
+
           <input
             id="longitude"
             type="number"
@@ -402,8 +446,12 @@ function ProfileForm() {
         </p>
       )}
 
-      <div className="flex flex-col gap-4 border-t border-[#E7EDE5] pt-6 sm:flex-row sm:items-center">
-        <PlateButton type="submit" disabled={loading} className="w-full sm:w-auto">
+      <div className="flex flex-col gap-4 border-t border-[#E7EDE5] pt-6 sm:flex-row sm:flex-wrap sm:items-center">
+        <PlateButton
+          type="submit"
+          disabled={loading || deleting}
+          className="w-full sm:w-auto"
+        >
           {loading
             ? "Saving..."
             : id
@@ -411,11 +459,11 @@ function ProfileForm() {
               : "Create Restaurant Profile"}
         </PlateButton>
 
-        <PlateButton
-          className="w-full sm:w-auto"
-        >
+        <PlateButton href="/restaurant" className="w-full sm:w-auto">
           Cancel
         </PlateButton>
+
+   
       </div>
     </form>
   );
@@ -423,78 +471,62 @@ function ProfileForm() {
 
 export default function RestaurantProfilePage() {
   return (
-<main className="min-h-screen overflow-x-hidden bg-[#F7F8F3] text-[#193D2B]">
-  {/* Header */}
-  <nav className="border-b border-[#DDE8DF] bg-white">
-    <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-3 py-3 min-[380px]:px-5 sm:gap-4 sm:px-8 sm:py-5">
-      <PlateButton href="/" className="!border-[#00583F]">
-        <span className="text-base font-black tracking-tight min-[380px]:text-lg">
-          Share<span className="text-[#00845F]">APlate</span>
-        </span>
-      </PlateButton>
+    <main className="min-h-screen overflow-x-hidden bg-[#F7F8F3] text-[#193D2B]">
+      <nav className="border-b border-[#DDE8DF] bg-white">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-3 py-3 min-[380px]:px-5 sm:gap-4 sm:px-8 sm:py-5">
+          <PlateButton href="/" className="!border-[#00583F]">
+            <span className="text-base font-black tracking-tight min-[380px]:text-lg">
+              Share<span className="text-[#00845F]">APlate</span>
+            </span>
+          </PlateButton>
 
-      <PlateButton href="/restaurant">
-        Dashboard
-      </PlateButton>
-    </div>
-  </nav>
-
-  {/* Heading */}
-  <section className="bg-gradient-to-br from-white via-white to-[#EAF3E8]">
-    <div className="mx-auto max-w-6xl px-4 py-8 min-[380px]:px-5 sm:px-8 sm:py-14">
-      <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#00845F] min-[380px]:text-xs sm:text-sm sm:tracking-[0.22em]">
-        ShareAPlate · Restaurant
-      </p>
-
-      <h1 className="mt-3 text-2xl font-black tracking-tight text-[#193D2B] min-[380px]:text-3xl sm:text-4xl md:text-5xl">
-        Set Up Your Restaurant
-      </h1>
-
-      <p className="mt-4 max-w-2xl text-sm leading-6 text-[#657568] sm:text-base sm:leading-7">
-        Keep your restaurant details accurate so your business can
-        participate in ShareAPlate, connect with local NGOs, and share
-        surplus food with people who need it.
-      </p>
-
-      <div className="mt-5 flex flex-col gap-3 min-[480px]:flex-row min-[480px]:flex-wrap sm:mt-6">
-        <PlateButton href="/restaurant">
-          Restaurant Dashboard
-        </PlateButton>
-
-        <PlateButton href="/restaurant/donations">
-          My Donations
-        </PlateButton>
-
-        <PlateButton href="/restaurant/directory">
-          NGO Directory
-        </PlateButton>
-      </div>
-    </div>
-  </section>
-
-  {/* Form */}
-  <section className="mx-auto max-w-3xl px-3 pb-8 pt-5 min-[380px]:px-5 sm:px-8 sm:pb-12 sm:pt-10">
-    <Suspense
-      fallback={
-        <div className="rounded-2xl border border-[#DDE8DF] bg-white p-4 text-sm leading-6 text-[#657568] min-[380px]:p-6 sm:p-8">
-          Loading restaurant form...
+          <PlateButton href="/restaurant">Dashboard</PlateButton>
         </div>
-      }
-    >
-      <ProfileForm />
-    </Suspense>
+      </nav>
 
-    {/* Footer */}
-    <footer className="mt-7 flex flex-col items-stretch justify-between gap-4 border-t border-[#DDE8DF] pt-5 min-[480px]:flex-row min-[480px]:items-center sm:mt-8 sm:pt-6">
-      <PlateButton href="/">
-        ← Back Home
-      </PlateButton>
+      <section className="bg-gradient-to-br from-white via-white to-[#EAF3E8]">
+        <div className="mx-auto max-w-6xl px-4 py-8 min-[380px]:px-5 sm:px-8 sm:py-14">
+          <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#00845F] min-[380px]:text-xs sm:text-sm sm:tracking-[0.22em]">
+            ShareAPlate · Restaurant
+          </p>
 
-      <p className="break-words text-xs leading-5 text-[#718174] min-[380px]:text-sm min-[480px]:text-right">
-        ShareAPlate · Good food. Greater impact.
-      </p>
-    </footer>
-  </section>
-</main>
+          <h1 className="mt-3 text-2xl font-black tracking-tight text-[#193D2B] min-[380px]:text-3xl sm:text-4xl md:text-5xl">
+            Set Up Your Restaurant
+          </h1>
+
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-[#657568] sm:text-base sm:leading-7">
+            Keep your restaurant details accurate so your business can
+            participate in ShareAPlate, connect with local NGOs, and share
+            surplus food with people who need it.
+          </p>
+
+          <div className="mt-5 flex flex-col gap-3 min-[480px]:flex-row min-[480px]:flex-wrap sm:mt-6">
+            <PlateButton href="/restaurant">Restaurant Dashboard</PlateButton>
+
+            <PlateButton href="/restaurant/donations">My Donations</PlateButton>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-3xl px-3 pb-8 pt-5 min-[380px]:px-5 sm:px-8 sm:pb-12 sm:pt-10">
+        <Suspense
+          fallback={
+            <div className="rounded-2xl border border-[#DDE8DF] bg-white p-4 text-sm leading-6 text-[#657568] min-[380px]:p-6 sm:p-8">
+              Loading restaurant form...
+            </div>
+          }
+        >
+          <ProfileForm />
+        </Suspense>
+
+        <footer className="mt-7 flex flex-col items-stretch justify-between gap-4 border-t border-[#DDE8DF] pt-5 min-[480px]:flex-row min-[480px]:items-center sm:mt-8 sm:pt-6">
+          <PlateButton href="/">Back Home</PlateButton>
+
+          <p className="break-words text-xs leading-5 text-[#718174] min-[380px]:text-sm min-[480px]:text-right">
+            ShareAPlate · Good food. Greater impact.
+          </p>
+        </footer>
+      </section>
+    </main>
   );
-  }
+}
