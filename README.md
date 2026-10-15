@@ -1,5 +1,20 @@
 # Food Donation Platform
 
+# live project link
+
+https://ngoproject-beta.vercel.app/
+
+One can check by these credentials
+Admin:
+gmail:admin@example.com
+password:Admin123456
+Restaurant: 
+gmail:testrestaurant2@example.com
+password:Restaurant123
+Ngo: 
+gmail:testngo2@example.com
+password:NGO123456
+
 A full-stack web application that connects restaurants with NGOs to reduce food waste and help communities in need. Restaurants can list surplus food, NGOs can discover and accept available donations, and administrators can monitor restaurants, NGOs, and donation activity.
 
 The application includes a frontend for user interaction, a backend API for business logic, MongoDB for data storage, JWT-based authentication, and email notifications for donation pickup activities.
@@ -7,6 +22,7 @@ The application includes a frontend for user interaction, a backend API for busi
 ## Features
 
 ### Frontend
+
 - Responsive user interface for restaurants, NGOs, and administrators.
 - Restaurant and NGO registration and login.
 - Dashboard access based on user roles.
@@ -18,6 +34,7 @@ The application includes a frontend for user interaction, a backend API for busi
 - Form validation and user-friendly error handling.
 
 ### Backend
+
 - RESTful API built with Next.js App Router and TypeScript.
 - MongoDB database integration using Mongoose.
 - JWT authentication with HTTP-only cookies.
@@ -31,6 +48,7 @@ The application includes a frontend for user interaction, a backend API for busi
 - Administrative endpoints for monitoring platform activity.
 
 ### Security
+
 - HTTP-only authentication cookies.
 - Server-side authentication and authorization.
 - Protected administrative endpoints.
@@ -39,23 +57,24 @@ The application includes a frontend for user interaction, a backend API for busi
 
 ## Technology Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js, React, TypeScript |
-| Backend | Next.js App Router, REST API routes |
-| Database | MongoDB Atlas |
-| ODM | Mongoose |
-| Authentication | JWT, HTTP-only cookies |
-| Email | Nodemailer, Gmail SMTP |
-| Geospatial search | MongoDB GeoJSON, 2dsphere indexes |
-| Deployment | Vercel |
-| Version control | Git, GitHub |
+| Layer             | Technology                          |
+| ----------------- | ----------------------------------- |
+| Frontend          | Next.js, React, TypeScript          |
+| Backend           | Next.js App Router, REST API routes |
+| Database          | MongoDB Atlas                       |
+| ODM               | Mongoose                            |
+| Authentication    | JWT, HTTP-only cookies              |
+| Email             | Nodemailer, Gmail SMTP              |
+| Geospatial search | MongoDB GeoJSON, 2dsphere indexes   |
+| Deployment        | Vercel                              |
+| Version control   | Git, GitHub                         |
 
 Adjust the frontend technology list if your implementation uses additional libraries, such as Tailwind CSS, shadcn/ui, or a form-validation library.
 
 ## User Roles
 
 ### Restaurant
+
 - Register and manage a restaurant profile.
 - Create food donation listings.
 - View donation details and status.
@@ -64,6 +83,7 @@ Adjust the frontend technology list if your implementation uses additional libra
 - Receive email notifications related to pickup activity.
 
 ### NGO
+
 - Register and manage an NGO profile.
 - Discover available food donations.
 - Find nearby verified NGOs that are accepting donations.
@@ -71,6 +91,7 @@ Adjust the frontend technology list if your implementation uses additional libra
 - Update donation status as the food is picked up and delivered.
 
 ### Administrator
+
 - View registered restaurants and NGOs.
 - Verify restaurants and NGOs.
 - View donations associated with restaurants and NGOs.
@@ -190,11 +211,11 @@ Run the production build locally to identify build errors before deployment.
 
 ## Environment Variables
 
-| Variable | Purpose |
-|---|---|
-| `MONGODB_URI` | MongoDB database connection string |
-| `JWT_SECRET` | Secret used to sign and verify JWTs |
-| `EMAIL_USER` | Gmail address used for notifications |
+| Variable             | Purpose                               |
+| -------------------- | ------------------------------------- |
+| `MONGODB_URI`        | MongoDB database connection string    |
+| `JWT_SECRET`         | Secret used to sign and verify JWTs   |
+| `EMAIL_USER`         | Gmail address used for notifications  |
 | `EMAIL_APP_PASSWORD` | Gmail app password used by Nodemailer |
 
 Store production values in your hosting provider's environment-variable settings rather than uploading a local environment file.
@@ -205,42 +226,42 @@ The following endpoints describe the backend API. They assume the routes are imp
 
 ### Restaurants
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/api/restaurants` | List restaurants |
-| POST | `/api/restaurants` | Register a restaurant |
-| GET | `/api/restaurants/:id` | Retrieve restaurant details |
-| PATCH | `/api/restaurants/:id` | Update restaurant details |
-| PATCH | `/api/restaurants/:id/verify` | Verify a restaurant |
+| Method | Endpoint                      | Description                 |
+| ------ | ----------------------------- | --------------------------- |
+| GET    | `/api/restaurants`            | List restaurants            |
+| POST   | `/api/restaurants`            | Register a restaurant       |
+| GET    | `/api/restaurants/:id`        | Retrieve restaurant details |
+| PATCH  | `/api/restaurants/:id`        | Update restaurant details   |
+| PATCH  | `/api/restaurants/:id/verify` | Verify a restaurant         |
 
 ### NGOs
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/api/ngo` | List NGOs |
-| POST | `/api/ngo` | Register an NGO |
-| GET | `/api/ngo/:id` | Retrieve NGO details |
-| PATCH | `/api/ngo/:id` | Update NGO details |
-| PATCH | `/api/ngo/:id/verify` | Verify an NGO |
+| Method | Endpoint              | Description          |
+| ------ | --------------------- | -------------------- |
+| GET    | `/api/ngo`            | List NGOs            |
+| POST   | `/api/ngo`            | Register an NGO      |
+| GET    | `/api/ngo/:id`        | Retrieve NGO details |
+| PATCH  | `/api/ngo/:id`        | Update NGO details   |
+| PATCH  | `/api/ngo/:id/verify` | Verify an NGO        |
 
 ### Donations
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/api/donations` | List donations |
-| POST | `/api/donations` | Create a donation |
-| POST | `/api/donations/:id/accept` | Accept an available donation |
-| PATCH | `/api/donations/:id/status` | Update donation status |
-| GET | `/api/donations/:id/nearby-NGO` | Find nearby eligible NGOs |
+| Method | Endpoint                        | Description                  |
+| ------ | ------------------------------- | ---------------------------- |
+| GET    | `/api/donations`                | List donations               |
+| POST   | `/api/donations`                | Create a donation            |
+| POST   | `/api/donations/:id/accept`     | Accept an available donation |
+| PATCH  | `/api/donations/:id/status`     | Update donation status       |
+| GET    | `/api/donations/:id/nearby-NGO` | Find nearby eligible NGOs    |
 
 ### Administration
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/api/admin/ngo` | List NGOs for administration |
-| GET | `/api/admin/ngo/:id/donations` | View donations associated with an NGO |
-| GET | `/api/admin/restaurants` | List restaurants for administration |
-| GET | `/api/admin/restaurants/:id/donations` | View donations associated with a restaurant |
+| Method | Endpoint                               | Description                                 |
+| ------ | -------------------------------------- | ------------------------------------------- |
+| GET    | `/api/admin/ngo`                       | List NGOs for administration                |
+| GET    | `/api/admin/ngo/:id/donations`         | View donations associated with an NGO       |
+| GET    | `/api/admin/restaurants`               | List restaurants for administration         |
+| GET    | `/api/admin/restaurants/:id/donations` | View donations associated with a restaurant |
 
 Monthly statistics may be supported through a query parameter such as `?month=YYYY-MM` on the appropriate implemented endpoint. Confirm the exact route and query parameters in the source code.
 
@@ -295,4 +316,3 @@ To configure email delivery:
 2. Generate an app password if your account and organization settings permit it.
 3. Store the Gmail address and app password in environment variables.
 4. Test email delivery in development and production.
-
