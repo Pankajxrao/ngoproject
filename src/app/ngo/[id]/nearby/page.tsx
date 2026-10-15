@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 interface Restaurant {
@@ -20,7 +21,7 @@ interface NearbyResponse {
   restaurants?: Restaurant[];
 }
 
-export default function NearbyRestaurantsPage() {
+function NearbyRestaurantsContent() {
   const params = useParams<{ id: string }>();
   const ngoId = params.id;
 
@@ -220,5 +221,13 @@ export default function NearbyRestaurantsPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+export default function NearbyRestaurantsPage() {
+  return (
+    <Suspense fallback={<div>Loading nearby restaurants...</div>}>
+      <NearbyRestaurantsContent />
+    </Suspense>
   );
 }
