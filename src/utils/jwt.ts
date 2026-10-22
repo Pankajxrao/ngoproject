@@ -5,19 +5,24 @@ export interface JwtPayload {
   role: "admin" | "ngo" | "restaurant";
 }
 
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+
+  if (!secret) {
+    throw new Error(
+      "JWT_SECRET is missing. Configure it in your environment variables."
+    );
+  }
+
+  return secret;
+}
+
 export function generateToken(payload: JwtPayload) {
-  return jwt.sign(
-    payload,
-    process.env.JWT_SECRET!,
-    {
-      expiresIn: "7d",
-    }
-  );
+  return jwt.sign(payload, getJwtSecret(), {
+    expiresIn: "7d",
+  });
 }
 
 export function verifyToken(token: string) {
-  return jwt.verify(
-    token,
-    process.env.JWT_SECRET!
-  ) as JwtPayload;
+  return jwt.verify(token, getJwtSecret()) as JwtPayload;
 }
