@@ -2,9 +2,11 @@
 
 # live project link
 
-https://ngoproject-beta.vercel.app/
+https://shareaplate-green.vercel.app/
 
-One can check by these credentials
+
+# Test Credentials
+
 Admin:
 gmail:admin@example.com
 password:Admin123456
@@ -35,7 +37,6 @@ The application includes a frontend for user interaction, a backend API for busi
 
 ### Backend
 
-- RESTful API built with Next.js App Router and TypeScript.
 - MongoDB database integration using Mongoose.
 - JWT authentication with HTTP-only cookies.
 - Role-based access control.
@@ -60,7 +61,7 @@ The application includes a frontend for user interaction, a backend API for busi
 | Layer             | Technology                          |
 | ----------------- | ----------------------------------- |
 | Frontend          | Next.js, React, TypeScript          |
-| Backend           | Next.js App Router, REST API routes |
+| Backend           | Next.js |
 | Database          | MongoDB Atlas                       |
 | ODM               | Mongoose                            |
 | Authentication    | JWT, HTTP-only cookies              |

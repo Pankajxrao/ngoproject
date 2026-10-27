@@ -1,12 +1,11 @@
-import { NextResponse } from "next/server";
+
+import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbconnect";
 import Restaurant from "@/models/Restaurant";
 import { getCurrentUser } from "@/utils/auth";
 
-export async function GET() {
+export async function GET(_request: NextRequest) {
   try {
-    await dbConnect();
-
     const user = await getCurrentUser();
 
     if (!user) {
@@ -16,11 +15,12 @@ export async function GET() {
       );
     }
 
+    await dbConnect();
+
     const restaurant = await Restaurant.findOne({
       userId: user.userId,
     }).lean();
 
-    // No profile yet is a valid result, not a server error.
     return NextResponse.json({
       success: true,
       restaurant: restaurant ?? null,
@@ -29,7 +29,10 @@ export async function GET() {
     console.error("LOAD MY RESTAURANT ERROR:", error);
 
     return NextResponse.json(
-      { success: false, message: "Could not load your restaurant profile." },
+      {
+        success: false,
+        message: "Could not load your restaurant profile.",
+      },
       { status: 500 }
     );
   }
