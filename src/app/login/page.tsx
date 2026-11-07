@@ -130,9 +130,7 @@ export default function LoginPage() {
         <div className="absolute -right-8 -top-10 h-28 w-28 rounded-full bg-white/50 sm:h-40 sm:w-40" />
 
         <div className="relative flex items-center gap-3 min-[380px]:gap-4 sm:gap-5">
-          <div className="flex h-[68px] w-[68px] shrink-0 items-center justify-center rounded-2xl bg-white text-3xl shadow-sm min-[380px]:h-[76px] min-[380px]:w-[76px] min-[380px]:text-4xl sm:h-24 sm:w-24 sm:text-5xl">
-            🥗
-          </div>
+         
 
           <div className="min-w-0">
             <p className="text-base font-extrabold tracking-tight sm:text-lg">
@@ -165,9 +163,7 @@ export default function LoginPage() {
     <div className="mx-auto w-full max-w-md md:ml-auto">
       <div className="rounded-3xl border border-[#e0e8df] bg-white/95 p-4 shadow-[0_12px_45px_rgba(23,60,43,0.07)] min-[380px]:p-5 sm:p-8 md:p-9">
         <div className="mb-6 sm:mb-8">
-          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eaf4ed] text-2xl sm:h-14 sm:w-14">
-            <span aria-hidden="true">🌱</span>
-          </div>
+         
 
           <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
             Log in

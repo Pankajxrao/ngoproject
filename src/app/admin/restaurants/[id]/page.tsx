@@ -38,18 +38,15 @@ function formatDate(value?: string) {
 function DetailCard({
   label,
   value,
-  icon,
+  
 }: {
   label: string;
   value: string;
-  icon: string;
 }) {
   return (
     <div className="group min-w-0 rounded-2xl border border-[#e5ebe2] bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#b8d5bd] hover:shadow-[0_10px_28px_rgba(25,65,43,0.06)]">
       <div className="flex min-w-0 items-start gap-4">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#edf5ed] text-xl">
-          {icon}
-        </div>
+       
 
         <div className="min-w-0 flex-1">
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#829084]">
@@ -238,17 +235,14 @@ function RestaurantDetails() {
     {
       label: "Restaurant name",
       value: restaurantName,
-      icon: "🍽️",
     },
     {
       label: "Restaurant ID",
       value: restaurant._id || "Not available",
-      icon: "🪪",
     },
     {
       label: "Address",
       value: restaurant.address || "Address not provided",
-      icon: "📍",
     },
     {
       label: "Latitude",
@@ -256,7 +250,6 @@ function RestaurantDetails() {
         coordinates?.[1] !== undefined
           ? String(coordinates[1])
           : "Not available",
-      icon: "🌐",
     },
     {
       label: "Longitude",
@@ -264,22 +257,18 @@ function RestaurantDetails() {
         coordinates?.[0] !== undefined
           ? String(coordinates[0])
           : "Not available",
-      icon: "🧭",
     },
     {
       label: "Donation eligibility",
       value: restaurant.donating ? "Eligible for donations" : "Not enabled",
-      icon: "💚",
     },
     {
       label: "Created on",
       value: formatDate(restaurant.createdAt),
-      icon: "📅",
     },
     {
       label: "Last updated",
       value: formatDate(restaurant.updatedAt),
-      icon: "🕒",
     },
   ];
 
@@ -346,9 +335,7 @@ function RestaurantDetails() {
             {/* Restaurant identity */}
             <div className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex min-w-0 items-center gap-4 sm:gap-5">
-                <div className="flex h-[68px] w-[68px] shrink-0 items-center justify-center rounded-2xl border-4 border-white bg-[#e5f2e8] text-3xl shadow-[0_4px_12px_rgba(25,65,43,0.12)] sm:h-20 sm:w-20 sm:text-4xl">
-                  🍽️
-                </div>
+               
 
                 <div className="min-w-0 flex-1">
                   <h2 className="break-words text-xl font-bold leading-tight text-[#123d2a] sm:text-2xl lg:text-3xl [overflow-wrap:anywhere]">
@@ -356,9 +343,7 @@ function RestaurantDetails() {
                   </h2>
 
                   <p className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#718075] sm:text-base">
-                    <span aria-hidden="true" className="shrink-0">
-                      📍
-                    </span>
+                   
                     <span className="break-words [overflow-wrap:anywhere]">
                       {restaurant.address || "Address not provided"}
                     </span>
@@ -472,17 +457,15 @@ function RestaurantDetails() {
                     key={detail.label}
                     label={detail.label}
                     value={detail.value}
-                    icon={detail.icon}
-                  />
+
+                    />
                 ))}
               </div>
             </section>
 
             {/* Admin note */}
             <div className="flex items-start gap-4 rounded-2xl border border-[#dce9d9] bg-gradient-to-r from-[#f2f8f0] to-[#fafbf8] p-5 sm:p-6">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
-                💡
-              </div>
+             
 
               <div className="min-w-0">
                 <h4 className="font-bold text-[#214c31]">Admin note</h4>

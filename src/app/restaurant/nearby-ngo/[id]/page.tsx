@@ -232,9 +232,7 @@ function NGODetailsContent() {
               )}
             </div>
 
-            <div className="hidden h-32 w-32 shrink-0 items-center justify-center rounded-[2rem] border border-white/20 bg-white/10 text-6xl shadow-2xl backdrop-blur-sm sm:flex lg:h-40 lg:w-40 lg:text-7xl">
-              🏡
-            </div>
+
           </div>
         </div>
       </section>
@@ -262,9 +260,8 @@ function NGODetailsContent() {
             role="alert"
             className="mx-auto max-w-2xl rounded-2xl border border-red-200 bg-white p-4 shadow-sm sm:rounded-3xl sm:p-8"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-2xl">
-              ⚠️
-            </div>
+       
+       
 
             <h2 className="mt-4 text-lg font-extrabold text-gray-900 sm:text-xl">
               Unable to load NGO details
@@ -288,9 +285,8 @@ function NGODetailsContent() {
             <div className="min-w-0 space-y-5 sm:space-y-6">
               <section className="overflow-hidden rounded-2xl border border-green-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg hover:shadow-green-950/5 sm:rounded-3xl">
                 <div className="flex items-start gap-3 border-b border-green-50 px-4 py-4 min-[380px]:items-center min-[380px]:gap-4 sm:px-8 sm:py-5">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-xl min-[380px]:h-12 min-[380px]:w-12 min-[380px]:rounded-2xl min-[380px]:text-2xl">
-                    🏢
-                  </div>
+            
+            
 
                   <div className="min-w-0">
                     <h2 className="text-base font-extrabold text-[#173c2b] sm:text-lg">
@@ -340,9 +336,8 @@ function NGODetailsContent() {
               {/* Additional details */}
               <section className="rounded-2xl border border-green-100 bg-white p-4 shadow-sm transition-shadow duration-300 hover:shadow-lg hover:shadow-green-950/5 sm:rounded-3xl sm:p-8">
                 <div className="flex items-start gap-3 min-[380px]:items-center min-[380px]:gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-xl min-[380px]:h-12 min-[380px]:w-12 min-[380px]:rounded-2xl min-[380px]:text-2xl">
-                    📋
-                  </div>
+       
+       
 
                   <div className="min-w-0">
                     <h2 className="text-base font-extrabold text-[#173c2b] sm:text-lg">
@@ -384,9 +379,8 @@ function NGODetailsContent() {
               <section className="overflow-hidden rounded-2xl border border-green-100 bg-white shadow-sm sm:rounded-3xl">
                 <div className="border-b border-green-50 px-4 py-4 sm:px-6 sm:py-5">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-xl sm:h-11 sm:w-11">
-                      📍
-                    </div>
+                   
+                   
                     <div className="min-w-0">
                       <h2 className="text-sm font-extrabold text-[#173c2b] sm:text-base">
                         Organization location
@@ -455,7 +449,7 @@ function NGODetailsContent() {
                 <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10" />
 
                 <div className="relative">
-                  <div className="text-3xl">💚</div>
+
                   <h2 className="mt-4 text-lg font-extrabold">
                     Fighting food waste together
                   </h2>

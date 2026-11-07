@@ -103,13 +103,11 @@ function SummaryCard({
   label,
   value,
   detail,
-  icon,
-}: {
+ }: {
   label: string;
   value: number;
   detail: string;
-  icon: string;
-}) {
+ }) {
   return (
     <div className="group rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-[#00845F]/40 hover:shadow-lg sm:p-6">
       <div className="flex items-start justify-between gap-3">
@@ -129,8 +127,7 @@ function SummaryCard({
             role="img"
             aria-label={label}
           >
-            {icon}
-          </span>
+           </span>
         </div>
       </div>
 
@@ -144,20 +141,15 @@ function SummaryCard({
 function DetailRow({
   label,
   value,
-  icon,
+  
 }: {
   label: string;
   value: string;
-  icon: string;
 }) {
   return (
     <div className="flex min-w-0 items-start gap-3">
-      <span
-        className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/15 text-sm transition-colors duration-300 group-hover:bg-emerald-50"
-        aria-hidden="true"
-      >
-        {icon}
-      </span>
+   
+   
 
       <div className="min-w-0 flex-1">
         <p className="text-xs font-medium opacity-75">
@@ -333,7 +325,7 @@ export default function NGODonationsPage() {
           <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <Link
-                href="/ngo/dashboard"
+                href="/ngo"
                 className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/25 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-white/10"
               >
                 <span aria-hidden="true">←</span>
@@ -435,29 +427,26 @@ export default function NGODonationsPage() {
               label="Total donations"
               value={summary.total}
               detail="All donations currently listed"
-              icon="🍱"
-            />
+
+              />
 
             <SummaryCard
               label="Available"
               value={summary.available}
               detail="Ready for an NGO to accept"
-              icon="🌱"
-            />
+             />
 
             <SummaryCard
               label="Accepted"
               value={summary.accepted}
               detail="Waiting to be collected"
-              icon="🤝"
-            />
+             />
 
             <SummaryCard
               label="Completed"
               value={summary.completed}
               detail="Successfully collected and completed"
-              icon="💚"
-            />
+             />
           </div>
         </section>
 
@@ -605,12 +594,8 @@ export default function NGODonationsPage() {
                           </h3>
                         </div>
 
-                        <span
-                          className="shrink-0 rounded-xl border border-white/25 bg-white/10 px-2.5 py-2 text-lg transition-colors group-hover:border-emerald-100 group-hover:bg-emerald-50"
-                          aria-hidden="true"
-                        >
-                          🍱
-                        </span>
+                    
+                    
                       </div>
 
                       {/* Status and food type */}
@@ -642,20 +627,17 @@ export default function NGODonationsPage() {
                       {/* Donation details */}
                       <div className="mt-5 space-y-4">
                         <DetailRow
-                          icon="🕒"
-                          label="Prepared at"
+                           label="Prepared at"
                           value={formatDate(donation.preparedAt)}
                         />
 
                         <DetailRow
-                          icon="⌛"
-                          label="Expiry time"
+                           label="Expiry time"
                           value={formatDate(donation.expiryTime)}
                         />
 
                         <DetailRow
-                          icon="📍"
-                          label="Pickup deadline"
+                           label="Pickup deadline"
                           value={formatDate(donation.pickupDeadline)}
                         />
                       </div>
@@ -776,7 +758,7 @@ export default function NGODonationsPage() {
         {/* Footer */}
         <footer className="mt-10 border-t border-gray-100 py-6 text-center">
           <p className="text-sm font-semibold text-[#00845F]">
-            ShareAPlate · Share food. Spread kindness. 💚
+            ShareAPlate · Share food. Spread kindness. 
           </p>
 
           <p className="mt-1 text-xs leading-5 text-gray-500">

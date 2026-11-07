@@ -221,13 +221,11 @@ function NGODetails() {
     {
       label: "NGO ID",
       value: ngo._id || "Not available",
-      icon: "🪪",
-    },
+     },
     {
       label: "Address",
       value: ngo.address || "Address not provided",
-      icon: "📍",
-    },
+     },
     {
       label: "Accepting donations",
       value:
@@ -236,40 +234,34 @@ function NGODetails() {
           : ngo.acceptingDonations
             ? "Yes, accepting donations"
             : "Not accepting donations",
-      icon: "💚",
-    },
+     },
     {
       label: "Capacity",
       value:
         ngo.capacity === undefined ? "Not provided" : String(ngo.capacity),
-      icon: "👥",
-    },
+     },
     {
       label: "Latitude",
       value:
         coordinates?.[1] === undefined
           ? "Not available"
           : String(coordinates[1]),
-      icon: "🌐",
-    },
+     },
     {
       label: "Longitude",
       value:
         coordinates?.[0] === undefined
           ? "Not available"
           : String(coordinates[0]),
-      icon: "🧭",
-    },
+     },
     {
       label: "Created on",
       value: formatDate(ngo.createdAt),
-      icon: "📅",
-    },
+     },
     {
       label: "Last updated",
       value: formatDate(ngo.updatedAt),
-      icon: "🕒",
-    },
+     },
   ];
 
   return (
@@ -335,9 +327,7 @@ function NGODetails() {
             {/* NGO identity */}
             <div className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex min-w-0 items-center gap-4 sm:gap-5">
-                <div className="flex h-[68px] w-[68px] shrink-0 items-center justify-center rounded-2xl border-4 border-white bg-[#E5F2E8] text-3xl shadow-[0_4px_12px_rgba(25,65,43,0.12)] sm:h-20 sm:w-20 sm:text-4xl">
-                  🏢
-                </div>
+            
 
                 <div className="min-w-0 flex-1">
                   <h2 className="break-words text-xl font-bold leading-tight text-[#123D2A] [overflow-wrap:anywhere] sm:text-2xl lg:text-3xl">
@@ -345,9 +335,7 @@ function NGODetails() {
                   </h2>
 
                   <p className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#718075] sm:text-base">
-                    <span aria-hidden="true" className="shrink-0">
-                      📍
-                    </span>
+                   
                     <span className="break-words [overflow-wrap:anywhere]">
                       {ngo.address || "Address not provided"}
                     </span>
@@ -462,17 +450,14 @@ function NGODetails() {
                     key={detail.label}
                     label={detail.label}
                     value={detail.value}
-                    icon={detail.icon}
-                  />
+                   />
                 ))}
               </div>
             </section>
 
             {/* Admin note */}
             <div className="flex items-start gap-4 rounded-2xl border border-[#DCE9D9] bg-gradient-to-r from-[#F2F8F0] to-[#FAFBF8] p-5 sm:p-6">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
-                💡
-              </div>
+          
 
               <div className="min-w-0">
                 <h4 className="font-bold text-[#214C31]">Admin note</h4>
@@ -487,7 +472,7 @@ function NGODetails() {
             {/* Back navigation */}
             <div className="border-t border-[#E8EDE5] pt-6">
               <Link
-                href="/admin/ngos"
+                href="/admin/ngo"
                 className="inline-flex min-h-11 items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-[#326747] transition hover:bg-[#F0F5EE] hover:text-[#173D2A] focus:outline-none focus:ring-2 focus:ring-[#70A981] focus:ring-offset-2"
               >
                 <span aria-hidden="true">←</span>
@@ -508,18 +493,14 @@ function NGODetails() {
 function Detail({
   label,
   value,
-  icon,
-}: {
+ }: {
   label: string;
   value: string;
-  icon: string;
-}) {
+ }) {
   return (
     <div className="group min-w-0 rounded-2xl border border-[#E5EBE2] bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#B8D5BD] hover:shadow-[0_10px_28px_rgba(25,65,43,0.06)]">
       <div className="flex min-w-0 items-start gap-4">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EDF5ED] text-xl">
-          {icon}
-        </div>
+        
 
         <div className="min-w-0 flex-1">
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#829084]">

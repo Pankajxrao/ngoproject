@@ -255,8 +255,8 @@ export default function RegisterPage() {
               >
                 {(
                   [
-                    { value: "restaurant", label: "🍽️ Restaurant" },
-                    { value: "ngo", label: "🤝 NGO" },
+                    { value: "restaurant", label: "Restaurant" },
+                    { value: "ngo", label: "NGO" },
                   ] as const
                 ).map((option) => {
                   const selected = role === option.value;

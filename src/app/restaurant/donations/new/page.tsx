@@ -450,9 +450,7 @@ export default function NewDonationPage() {
           <aside className="space-y-5 lg:sticky lg:top-24">
             <section className="overflow-hidden rounded-2xl border border-[#DCEBE0] bg-white shadow-[0_4px_24px_rgba(23,60,43,0.035)]">
               <div className="bg-[#E9F6ED] p-5">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm">
-                  🌱
-                </div>
+            
                 <h2 className="mt-4 text-lg font-extrabold text-[#174D36]">
                   Small act. Big impact.
                 </h2>
@@ -487,9 +485,7 @@ export default function NewDonationPage() {
 
             <section className="rounded-2xl border border-amber-200/80 bg-[#FFF9E9] p-5">
               <div className="flex items-start gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-lg">
-                  ⏱
-                </span>
+                
                 <div>
                   <h3 className="text-sm font-bold text-[#80551B]">
                     Food safety first

@@ -218,9 +218,7 @@ export default function RestaurantDonationsPage() {
             <p className="text-sm font-medium text-gray-500">
               Total donations
             </p>
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E7F5EC] text-lg">
-              🍲
-            </span>
+         
           </div>
           <p className="mt-3 text-3xl font-extrabold">
             {donations.length}
@@ -235,9 +233,7 @@ export default function RestaurantDonationsPage() {
             <p className="text-sm font-medium text-gray-500">
               Available
             </p>
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-lg">
-              🌱
-            </span>
+     
           </div>
           <p className="mt-3 text-3xl font-extrabold text-[#00845F]">
             {donations.filter((d) => d.status === "available").length}
@@ -320,9 +316,7 @@ export default function RestaurantDonationsPage() {
     ) : donations.length === 0 ? (
       /* Empty state */
       <section className="mt-5 rounded-2xl border border-dashed border-[#BCD4C3] bg-white px-4 py-10 text-center shadow-sm sm:mt-6 sm:rounded-3xl sm:px-10 sm:py-14">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E7F5EC] text-3xl">
-          🍲
-        </div>
+       
 
         <h2 className="mt-5 text-xl font-extrabold">
           Your donation journey starts here
@@ -386,9 +380,7 @@ export default function RestaurantDonationsPage() {
 
             {/* Quantity */}
             <div className="relative z-10 mt-5 flex min-w-0 items-center gap-3 rounded-xl border border-[#E2EBE3] bg-[#F7FAF7] p-3 transition-colors duration-300 group-hover:border-white/20 group-hover:bg-white/10 sm:p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E7F5EC] text-xl">
-                📦
-              </div>
+            
 
               <div className="min-w-0">
                 <p className="text-xs font-medium text-gray-500 transition-colors duration-300 group-hover:text-white/80">
@@ -402,9 +394,7 @@ export default function RestaurantDonationsPage() {
 
             {/* Pickup deadline */}
             <div className="relative z-10 mt-5 flex min-w-0 items-start gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#EDF5EF] text-base">
-                🕒
-              </span>
+         
 
               <div className="min-w-0">
                 <p className="text-xs font-medium text-gray-500 transition-colors duration-300 group-hover:text-white/80">
@@ -418,9 +408,8 @@ export default function RestaurantDonationsPage() {
 
             {/* Expiry */}
             <div className="relative z-10 mt-4 flex min-w-0 items-start gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-base">
-                ⏳
-              </span>
+     
+     
 
               <div className="min-w-0">
                 <p className="text-xs font-medium text-gray-500 transition-colors duration-300 group-hover:text-white/80">

@@ -198,9 +198,7 @@ export default function AdminDashboard() {
 
               <div className="relative flex h-full min-h-[258px] flex-col sm:min-h-[290px]">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-100 bg-emerald-50 text-3xl shadow-sm transition duration-300 group-hover:scale-105 group-hover:bg-white sm:h-16 sm:w-16">
-                    🍽️
-                  </div>
+        
 
                   <span className="rounded-full border border-emerald-100 bg-white/90 px-3 py-1.5 text-xs font-bold text-[#00845F]">
                     Organization
@@ -262,9 +260,7 @@ export default function AdminDashboard() {
 
               <div className="relative flex h-full min-h-[258px] flex-col sm:min-h-[290px]">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-100 bg-emerald-50 text-3xl shadow-sm transition duration-300 group-hover:scale-105 group-hover:bg-white sm:h-16 sm:w-16">
-                    🤝
-                  </div>
+           
 
                   <span className="rounded-full border border-emerald-100 bg-white/90 px-3 py-1.5 text-xs font-bold text-[#00845F]">
                     Organization
@@ -309,12 +305,7 @@ export default function AdminDashboard() {
 
         {/* Bottom note */}
         <footer className="mt-10 rounded-2xl border border-emerald-100 bg-white/80 p-5 text-center sm:mt-14 sm:p-7">
-          <span className="text-2xl" aria-hidden="true">
-            💚
-          </span>
-          <p className="mt-2 text-sm font-bold text-[#193D2B]">
-            Together, we can make every plate count.
-          </p>
+         
           <p className="mt-1 text-xs leading-5 text-[#657568]">
             ShareAPlate · Share food. Spread kindness.
           </p>
