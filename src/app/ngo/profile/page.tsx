@@ -28,7 +28,7 @@ type Coordinates = {
 const GREEN = "#00845F";
 
 const LocationPicker = dynamic(
-  () => import("@/components/LocationPicker"),
+  () => import("@/components/ui/LocationPicker"),
   {
     ssr: false,
     loading: () => (

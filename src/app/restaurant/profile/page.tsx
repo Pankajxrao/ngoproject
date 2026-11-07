@@ -11,9 +11,9 @@ import {
   type ReactNode,
 } from "react";
 
-import type { Coordinates } from "@/components/LocationPicker";
+import type { Coordinates } from "@/components/ui/LocationPicker";
 
-const LocationPicker = dynamic(() => import("@/components/LocationPicker"), {
+const LocationPicker = dynamic(() => import("@/components/ui/LocationPicker"), {
   ssr: false,
   loading: () => (
     <div className="flex h-64 items-center justify-center rounded-xl border border-[#DDE8DF] bg-[#F5F8F3] text-sm text-[#657568]">
