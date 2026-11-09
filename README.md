@@ -2,8 +2,7 @@
 
 # live project link
 
-https://shareaplate-green.vercel.app/
-
+https://ngoproject-ten.vercel.app/
 
 # Test Credentials
 
